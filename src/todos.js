@@ -2,8 +2,8 @@ const PouchDB = require('pouchdb');
 const homedir = require('os').homedir();
 const fs = require('fs');
 
-if (!fs.existsSync(`${homedir}/.local/Todo-API`)) { fs.mkdirSync(`${homedir}/.local/Todo-API`) }
-const TodoDB = new PouchDB(`${homedir}/.local/Todo-API/Todo`);
+if (!fs.existsSync(`${__dirname}/Todo-API`)) { fs.mkdirSync(`${__dirname}/Todo-API`) }
+const TodoDB = new PouchDB(`${__dirname}/Todo-API/Todo`);
 
 class Todo {
     async newTodo(title, body, uuid) {
