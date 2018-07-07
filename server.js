@@ -10,6 +10,9 @@ app.use(function (req, res, next) {
     next();
 });
 
+app.get('/', (req, res) => {
+    return res.end('TODO App API by Collin and Jesse');
+})
 app.get('/v1/todo/list', async (req, res) => {
     let todoData = await Todo.showAll();
     return res.send(todoData);
@@ -37,7 +40,7 @@ app.post('/v1/todo/update', async (req, res) => {
     return res.end();
 });
 
-app.post('/v1/todo/delete', async (req, res) => {  
+app.post('/v1/todo/delete', async (req, res) => {
     let id = req.query.id;
     await Todo.deleteTodo(id);
     return res.end(`Deleted todo: ${id}`);
