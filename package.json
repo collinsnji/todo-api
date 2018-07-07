@@ -1,0 +1,30 @@
+{
+  "name": "todo-api",
+  "version": "1.0.0",
+  "description": "Simple todo api",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.16.3",
+    "pouchdb": "^7.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/collinsnji/todo-api.git"
+  },
+  "keywords": [
+    "todo",
+    "api",
+    "pouchdb"
+  ],
+  "author": "collin, jesse",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/collinsnji/todo-api/issues"
+  },
+  "homepage": "https://github.com/collinsnji/todo-api#readme"
+}
