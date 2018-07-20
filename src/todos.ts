@@ -1,22 +1,29 @@
-const PouchDB = require('pouchdb');
-const homedir = require('os').homedir();
-const fs = require('fs');
+import PouchDB from 'pouchdb';
+import { existsSync, mkdirSync } from 'fs';
+// const homedir = process.env.HOME;
 
-if (!fs.existsSync(`${__dirname}/Todo-API`)) { fs.mkdirSync(`${__dirname}/Todo-API`) }
+if (!existsSync(`${__dirname}/Todo-API`)) { mkdirSync(`${__dirname}/Todo-API`) }
 const TodoDB = new PouchDB(`${__dirname}/Todo-API/Todo`);
 
-class Todo {
-    async newTodo(title, body, uuid) {
-        title = title.trim();
+// Interface
+interface TodoConstructor {
+    title: string;
+    body: string;
+    uuid?: string;
+}
+
+export class Todo {
+    constructor() { }
+    
+    public async newTodo(TodoParams: TodoConstructor): Promise<string | void> {
         try {
-            title = title.trim() || new Date().toDateString();
-            let id = Number(new Date().toISOString().replace(/\D|2018-\d+-\d+/gmi, ''));
-            let uniqueID = (Math.floor(Math.random() * id)).toString();
+            TodoParams.title = TodoParams.title.trim() || new Date().toDateString();
+            let uniqueID: string = Math.random().toString(36).substring(2, 10).toString();
 
             let todo = {
-                _id: uuid || (uniqueID.length < 9) ? uniqueID.padStart(9, 0) : uniqueID,
-                title: title,
-                body: body,
+                _id: TodoParams.uuid || uniqueID,
+                title: TodoParams.title,
+                body: TodoParams.body,
                 lastModified: new Date().toDateString(),
                 completed: false
             };
@@ -28,12 +35,12 @@ class Todo {
         }
     }
 
-    async update(todoId, newTaskTitle, newTaskBody) {
-        if (todoId) {
+    public async update(TodoParams: TodoConstructor): Promise<PouchDB.Core.Response | void> {
+        if (TodoParams.uuid) {
             try {
-                let todo = await TodoDB.get(todoId);
-                todo.title = newTaskTitle.trim();
-                todo.body = newTaskBody;
+                let todo: any = await TodoDB.get(TodoParams.uuid);
+                todo.title = TodoParams.title.trim();
+                todo.body = TodoParams.body;
                 todo.lastModified = new Date().toDateString();
 
                 return await TodoDB.put(todo);
@@ -42,16 +49,17 @@ class Todo {
         else { return console.log(`Invalid or No todo ID provided`); }
     }
 
-    async showAll() {
-        let docs = [];
-        let allItems= [];
+    public async showAll(): Promise<Array<object> | void> {
+        let docs: Array<string> = [];
+        let allItems: Array<object> = [];
         try {
-            let allDocs = await TodoDB.allDocs({ include_docs: true, descending: true });
-            allDocs.rows.forEach(async (doc) => {
-                docs.push(doc);
-            });
-        } catch (err) { console.log(`Error: (${err.status}) ${err.name}: ${err.message}`); }
-        docs.forEach(todo => {
+            let allDocs: any = await TodoDB.allDocs({ include_docs: true, descending: true });
+            allDocs.rows.forEach(async (doc: any) => docs.push(doc));
+        } catch (err) {
+            console.log(`Error: (${err.status}) ${err.name}: ${err.message}`);
+        }
+
+        docs.forEach((todo: any) => {
             allItems.push({
                 id: todo.id,
                 title: todo.doc.title,
@@ -65,19 +73,19 @@ class Todo {
         return allItems;
     }
 
-    async deleteTodo(todoId) {
+    public async deleteTodo(todoId: string): Promise<void> {
         try {
-            let todo = await TodoDB.get(todoId);
+            let todo: any = await TodoDB.get(todoId);
             TodoDB.remove(todo._id, todo._rev);
             return console.log('todo Deleted');
         } catch (err) {
             console.log(`Error: (${err.status}) ${err.name}: ${err.message}`);
         }
     }
-    async deleteAll() {
+    public async deleteAll(): Promise<void> {
         try {
             let allDocs = await TodoDB.allDocs({ include_docs: true, descending: true });
-            allDocs.rows.forEach(async (todo) => {
+            allDocs.rows.forEach(async (todo: any) => {
                 todo = await todo;
                 TodoDB.remove(todo.doc._id, todo.doc._rev);
             });
@@ -88,4 +96,4 @@ class Todo {
     }
 }
 
-module.exports = Todo;
+export default Todo
