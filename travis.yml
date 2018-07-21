@@ -1,0 +1,15 @@
+{
+  "os": "linux",
+  "dist": "trusty",
+  "cache": {
+    "directories": [
+      "node_modules"
+    ]
+  },
+  "group": "stable",
+  "script": [
+    "npm run build"
+  ],
+  "node_js": 9,
+  "language": "node_js"
+}
