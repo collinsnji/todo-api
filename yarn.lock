@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@types/body-parser@*":
+"@types/body-parser@*", "@types/body-parser@^1.17.0":
   version "1.17.0"
   resolved "https://registry.yarnpkg.com/@types/body-parser/-/body-parser-1.17.0.tgz#9f5c9d9bd04bb54be32d5eb9fc0d8c974e6cf58c"
   dependencies:
@@ -1148,6 +1148,10 @@ type-is@~1.6.15, type-is@~1.6.16:
   dependencies:
     media-typer "0.3.0"
     mime-types "~2.1.18"
+
+typescript@^2.9.2:
+  version "2.9.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.9.2.tgz#1cbf61d05d6b96269244eb6a3bce4bd914e0f00c"
 
 unpipe@1.0.0, unpipe@~1.0.0:
   version "1.0.0"

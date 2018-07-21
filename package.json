@@ -4,20 +4,20 @@
   "description": "Simple todo api",
   "main": "server.js",
   "dependencies": {
-    "express": "^4.16.3",
-    "pouchdb": "^7.0.0"
-  },
-  "devDependencies": {
     "@types/express": "^4.16.0",
     "@types/node": "^10.5.2",
     "@types/pouchdb": "^6.3.2",
-    "rimraf": "^2.6.2"
+    "express": "^4.16.3",
+    "pouchdb": "^7.0.0",
+    "rimraf": "^2.6.2",
+    "typescript": "^2.9.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rimraf build tmp",
     "start": "node build/index.js",
-    "build": "tsc -p ."
+    "build": "./node_modules/.bin/tsc -p .",
+    "postinstall": "./node_modules/.bin/tsc -p ."
   },
   "repository": {
     "type": "git",
