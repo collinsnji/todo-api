@@ -5,28 +5,43 @@ const app: express.Application = express();
 const Todo: todo = new todo();
 const port: string | number = process.env.PORT || 4000;
 
+app.use(express.json());
 app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
 
-app.get('/', (req, res): void => {
+app.all('/', (req, res): void => {
     return res.end('TODO App API by Collin and Jesse');
 })
 app.get('/v1/todo/list', async (req, res): Promise<express.Response> => {
     let todoData: Array<object> | void = await Todo.showAll();
     return res.send(todoData);
 });
+app.get('/v1/todo/:id', async (req, res): Promise<express.Response> => {
+    let id: string = req.params.id;
+    let todo = await Todo.get(id.toString());
+    return res.send(todo);
+
+})
 
 app.post('/v1/todo/new', async (req, res): Promise<void> => {
-    const [uuid, title, body] = [req.query.uuid, req.query.title, req.query.body];
+    console.log(req.body);
+    const [uuid, title, body] = [
+        req.query.uuid || req.body.uuid,
+        req.query.title || req.body.title,
+        req.query.body || req.body.body
+    ];
 
     // FIXME: Use TodoConstructor Interface to define type instead of any
     const todo: any = { uuid: uuid, title: title, body: body };
-
-    await Todo.newTodo(todo);
-    res.send('Todo Created')
+    try {
+        await Todo.newTodo(todo);
+        res.send('Todo Created')
+    } catch (e) {
+        res.end(e);
+    }
     return res.end();
 });
 
