@@ -14,7 +14,7 @@ interface TodoConstructor {
 
 export class Todo {
     constructor() { }
-    
+
     public async newTodo(TodoParams: TodoConstructor): Promise<string | void> {
         try {
             TodoParams.title = TodoParams.title.trim() || new Date().toDateString();
@@ -32,6 +32,7 @@ export class Todo {
         }
         catch (err) {
             console.log(`Error: (${err.status}) ${err.name}: ${err.message}`);
+            return `Error: (${err.status}) ${err.name}: ${err.message}`;
         }
     }
 
@@ -92,6 +93,24 @@ export class Todo {
             return console.log('All todo Deleted');
         } catch (err) {
             console.log(`Error: (${err.status}) ${err.name}: ${err.message}`);
+        }
+    }
+
+    public async get(id: string): Promise<any> {
+        try {
+            let todo: any = await TodoDB.get(id);
+            return JSON.stringify({
+                id: todo.id,
+                title: todo.title,
+                ingredients: {
+                    id: Math.floor(Math.random() * 10),
+                    items: [todo.body]
+                },
+                lastModified: todo.lastModified
+            });
+        }
+        catch (err) {
+            console.log(`TypeError: ${err.message}`);
         }
     }
 }
