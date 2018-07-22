@@ -15,7 +15,7 @@ interface TodoConstructor {
 export class Todo {
     constructor() { }
 
-    public async newTodo(TodoParams: TodoConstructor): Promise<string | void> {
+    public async newTodo(TodoParams: TodoConstructor): Promise<PouchDB.Core.Response | void> {
         try {
             TodoParams.title = TodoParams.title.trim() || new Date().toDateString();
             let uniqueID: string = Math.random().toString(36).substring(2, 10).toString();
@@ -27,12 +27,10 @@ export class Todo {
                 lastModified: new Date().toDateString(),
                 completed: false
             };
-            await TodoDB.put(todo);
-            return console.log('Todo added');
+            return await TodoDB.put(todo);
         }
         catch (err) {
-            console.log(`Error: (${err.status}) ${err.name}: ${err.message}`);
-            return `Error: (${err.status}) ${err.name}: ${err.message}`;
+            throw new Error(`(${err.status}) ${err.name}: ${err.message}`);
         }
     }
 
@@ -45,7 +43,7 @@ export class Todo {
                 todo.lastModified = new Date().toDateString();
 
                 return await TodoDB.put(todo);
-            } catch (err) { console.log(`Error: (${err.status}) ${err.name}: ${err.message}`); }
+            } catch (err) { throw new Error(`(${err.status}) ${err.name}: ${err.message}`); }
         }
         else { return console.log(`Invalid or No todo ID provided`); }
     }
@@ -57,7 +55,7 @@ export class Todo {
             let allDocs: any = await TodoDB.allDocs({ include_docs: true, descending: true });
             allDocs.rows.forEach(async (doc: any) => docs.push(doc));
         } catch (err) {
-            console.log(`Error: (${err.status}) ${err.name}: ${err.message}`);
+            throw new Error(`(${err.status}) ${err.name}: ${err.message}`);
         }
 
         docs.forEach((todo: any) => {
@@ -80,7 +78,7 @@ export class Todo {
             TodoDB.remove(todo._id, todo._rev);
             return console.log('todo Deleted');
         } catch (err) {
-            console.log(`Error: (${err.status}) ${err.name}: ${err.message}`);
+            throw new Error(`(${err.status}) ${err.name}: ${err.message}`);
         }
     }
     public async deleteAll(): Promise<void> {
@@ -92,7 +90,7 @@ export class Todo {
             });
             return console.log('All todo Deleted');
         } catch (err) {
-            console.log(`Error: (${err.status}) ${err.name}: ${err.message}`);
+            throw new Error(`(${err.status}) ${err.name}: ${err.message}`);
         }
     }
 
@@ -110,7 +108,7 @@ export class Todo {
             });
         }
         catch (err) {
-            console.log(`TypeError: ${err.message}`);
+            throw new TypeError(`${err.message}`);
         }
     }
 }
