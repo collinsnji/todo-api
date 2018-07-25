@@ -14,18 +14,28 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
 
 app.all('/', (req, res): void => {
     return res.end('TODO App API by Collin and Jesse');
-})
+});
+
+/**
+ * List all todo items
+ */
 app.get('/v1/todo/list', async (req, res): Promise<express.Response> => {
     let todoData: Array<object> | void = await Todo.showAll();
     return res.send(todoData);
 });
+
+/**
+ * Get todo by supplying it's uuid
+ */
 app.get('/v1/todo/:id', async (req, res): Promise<express.Response> => {
     let id: string = req.params.id;
     let todo = await Todo.get(id.toString());
     return res.send(todo);
+});
 
-})
-
+/**
+ * Create a new todo item
+ */
 app.post('/v1/todo/new', async (req, res): Promise<void> => {
     console.log(req.body);
     const [uuid, title, body] = [
@@ -45,7 +55,10 @@ app.post('/v1/todo/new', async (req, res): Promise<void> => {
     return res.end();
 });
 
-app.post('/v1/todo/update', async (req, res): Promise<void | any> => {
+/**
+ * Update an existing todo item
+ */
+app.put('/v1/todo/update', async (req, res): Promise<void | any> => {
     const id = req.query.id;
     if (!id) return res.end('Error: You need to provide the Todo ID');
 
@@ -57,8 +70,16 @@ app.post('/v1/todo/update', async (req, res): Promise<void | any> => {
     return res.end();
 });
 
-app.post('/v1/todo/delete', async (req, res): Promise<void> => {
-    let id = req.query.id;
+/**
+ * Delete a todo item using it's ID
+ */
+app.delete('/v1/todo/delete/:id?', async (req, res): Promise<express.Response | void> => {
+    let id = req.params.id || req.query.id;
+    if (!id) {
+        return res.status(400).send({
+            message: `Could not find note with id ${id}`
+        });
+    }
     await Todo.deleteTodo(id);
     return res.end(`Deleted todo: ${id}`);
 });
