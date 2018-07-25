@@ -1,8 +1,6 @@
-const chai = require('chai');
-const [should, expect] = [chai.should(), chai.expect];
+const expect = require('chai').expect;
 const { Todo } = require('../build/src/todos');
 
-let t = 'null'
 describe('Running TODO tests..', () => {
     const todo = new Todo();
 
@@ -23,4 +21,4 @@ describe('Running TODO tests..', () => {
     it('Should get all todo items as an array', () => {
         expect(typeof todo.showAll()).to.equal('object');
     });
-})
+});
