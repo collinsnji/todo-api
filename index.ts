@@ -36,7 +36,7 @@ app.get('/v1/todo/:id', async (req, res): Promise<express.Response> => {
 /**
  * Create a new todo item
  */
-app.post('/v1/todo/new', async (req, res): Promise<void> => {
+app.post('/v1/todo/new', async (req, res): Promise<any> => {
     console.log(req.body);
     const [uuid, title, body] = [
         req.query.uuid || req.body.uuid,
@@ -48,7 +48,7 @@ app.post('/v1/todo/new', async (req, res): Promise<void> => {
     const todo: any = { uuid: uuid, title: title, body: body };
     try {
         await Todo.newTodo(todo);
-        res.send('Todo Created')
+        return res.send('Todo Created');
     } catch (e) {
         res.end(e);
     }
