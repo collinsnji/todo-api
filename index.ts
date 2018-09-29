@@ -38,14 +38,14 @@ app.get('/v1/todo/:id', async (req, res): Promise<express.Response> => {
  */
 app.post('/v1/todo/new', async (req, res): Promise<any> => {
     console.log(req.body);
-    const [uuid, title, body] = [
-        req.query.uuid || req.body.uuid,
+    const [id, title, items] = [
+        req.query.id || req.body.id,
         req.query.title || req.body.title,
-        req.query.body || req.body.body
+        req.query.items || req.body.items
     ];
 
     // FIXME: Use TodoConstructor Interface to define type instead of any
-    const todo: any = { uuid: uuid, title: title, body: body };
+    const todo: any = { id: id, title: title, items: items };
     try {
         await Todo.newTodo(todo);
         return res.send('Todo Created');
@@ -62,8 +62,8 @@ app.put('/v1/todo/update', async (req, res): Promise<void | any> => {
     const id = req.query.id;
     if (!id) return res.end('Error: You need to provide the Todo ID');
 
-    const [title, body] = [req.query.title, req.query.body];
-    const todo = { title: title, body: body, uuid: id }
+    const [title, items] = [req.query.title, req.query.items];
+    const todo = { title: title, items: items, id: id }
 
     await Todo.update(todo);
     res.send('Todo Updated');

@@ -10,12 +10,12 @@ const TodoDB = new PouchDB(`${__dirname}/Todo-API/Todo`);
  * 
  * title: `string`  
  * body: `string`  
- * uuid?: `string`  
+ * id?: `string`  
  */
 interface TodoConstructor {
     title: string;
-    body: string;
-    uuid?: string;
+    items: string;
+    id?: string;
 }
 
 /**
@@ -34,9 +34,9 @@ export class Todo {
 
             // Todo object
             let todo = {
-                _id: TodoParams.uuid || uniqueID,
+                _id: TodoParams.id || uniqueID,
                 title: TodoParams.title,
-                body: TodoParams.body,
+                items: TodoParams.items,
                 lastModified: new Date().toDateString(),
                 completed: false
             };
@@ -47,19 +47,19 @@ export class Todo {
         }
     }
     /**
-     * Update an existing Todo by using supplying the uuid of the old todo
-     * and an object containing data for a new Todo. A new uuid is generated
+     * Update an existing Todo by using supplying the id of the old todo
+     * and an object containing data for a new Todo. A new id is generated
      * 
-     * @requires `TodoParams.uuid`
+     * @requires `TodoParams.id`
      * @param TodoParams {TodoConstructor} Object with new params for the update
      * @returns Promise<PouchDB.Core.Response | void>
      */
     public async update(TodoParams: TodoConstructor): Promise<PouchDB.Core.Response | void> {
-        if (TodoParams.uuid) {
+        if (TodoParams.id) {
             try {
-                let todo: any = await TodoDB.get(TodoParams.uuid);
+                let todo: any = await TodoDB.get(TodoParams.id);
                 todo.title = TodoParams.title.trim();
-                todo.body = TodoParams.body;
+                todo.items = TodoParams.items;
                 todo.lastModified = new Date().toDateString();
 
                 return await TodoDB.put(todo);
@@ -89,13 +89,13 @@ export class Todo {
             allItems.push({
                 id: todo.id,
                 title: todo.doc.title,
-                ingredients: {
-                    id: Math.floor(Math.random() * 10),
-                    items: [todo.doc.body]
-                },
+                items: JSON.parse(JSON.stringify(todo.doc.items)),
+                completed: todo.doc.completed,
                 lastModified: todo.doc.lastModified
             });
         });
+        
+        console.log(allItems);
         return allItems;
     }
 
@@ -129,7 +129,7 @@ export class Todo {
         }
     }
     /**
-     * Get a todo item from the database by using it's uuid
+     * Get a todo item from the database by using it's id
      * @param id Id of todo item to retrieve from the todo databse
      */
     public async get(id: string): Promise<any> {
