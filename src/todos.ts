@@ -9,7 +9,7 @@ const TodoDB = new PouchDB(`${__dirname}/Todo-API/Todo`);
  * TodoConstructor Interface   
  * 
  * title: `string`  
- * body: `string`  
+ * items: `string`  
  * id?: `string`  
  */
 interface TodoConstructor {
@@ -94,8 +94,6 @@ export class Todo {
                 lastModified: todo.doc.lastModified
             });
         });
-        
-        console.log(allItems);
         return allItems;
     }
 
@@ -136,12 +134,10 @@ export class Todo {
         try {
             let todo: any = await TodoDB.get(id);
             return JSON.stringify({
-                id: todo.id,
+                id: id,
                 title: todo.title,
-                ingredients: {
-                    id: Math.floor(Math.random() * 10),
-                    items: [todo.body]
-                },
+                items: JSON.parse(JSON.stringify(todo.items)),
+                completed: todo.completed,
                 lastModified: todo.lastModified
             });
         }
