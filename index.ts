@@ -12,6 +12,9 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
     next();
 });
 
+/**
+ * Show the default message for the root route
+ */
 app.all('/', (req, res): void => {
     return res.end('TODO App API by Collin and Jesse');
 });
@@ -43,7 +46,9 @@ app.post('/v1/todo/new', async (req, res): Promise<any> => {
         req.query.title || req.body.title,
         req.query.items || req.body.items
     ];
-
+    if (!title || !items) {
+        return res.status(400).json({ error: 'Could not parse Todo body' });
+    }
     // FIXME: Use TodoConstructor Interface to define type instead of any
     const todo: any = { id: id, title: title, items: items };
     try {

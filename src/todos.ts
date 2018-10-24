@@ -89,7 +89,7 @@ export class Todo {
             allItems.push({
                 id: todo.id,
                 title: todo.doc.title,
-                items: JSON.parse(JSON.stringify(todo.doc.items)),
+                items: todo.doc.items, // JSON.parse(JSON.stringify(todo.doc.items)),
                 completed: todo.doc.completed,
                 lastModified: todo.doc.lastModified
             });
